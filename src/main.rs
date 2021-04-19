@@ -6,6 +6,28 @@ enum State {
     SecondValue,
 }
 
+fn is_opeartor(operator: char) -> bool {
+    ['+', '-', '*', '/'].contains(&operator)
+}
+
+fn is_invalid_number(number: f32) -> bool {
+    number.is_nan() || number.is_infinite()
+}
+
+fn calculate(a: f32, b: f32, operator: char) -> f32 {
+    if operator == '+' {
+        a + b
+    } else if operator == '-' {
+        a - b
+    } else if operator == '*' {
+        a * b
+    } else if operator == '/' {
+        a / b
+    } else {
+        0f32
+    }
+}
+
 fn main() {
     let mut first_value: f32 = 0f32;
     let mut operator: char = '\0';
@@ -28,7 +50,7 @@ fn main() {
                             println!("Enter correct number!");
                         } else {
                             first_value = first_value_parsed.unwrap();
-                            if first_value.is_nan() || first_value.is_infinite() {
+                            if is_invalid_number(first_value) {
                                 state = State::FirstValue;
                                 println!("Enter correct number!");
                             }
@@ -38,7 +60,7 @@ fn main() {
                         state = State::SecondValue;
                         operator = user_input.pop().unwrap();
 
-                        if !(['+', '-', '*', '/'].contains(&operator)) || bytes_read > 2 {
+                        if !is_opeartor(operator) || bytes_read > 2 {
                             state = State::Operation;
                             println!("Enter correct operator!");
                         }
@@ -52,21 +74,11 @@ fn main() {
                             println!("Enter correct number!");
                         } else {
                             second_value = second_value_parsed.unwrap();
-                            if second_value.is_nan() || second_value.is_infinite() {
+                            if is_invalid_number(second_value) {
                                 state = State::SecondValue;
                                 println!("Enter correct number!");
                             } else {
-                                let result: f32 = if operator == '+' {
-                                    first_value + second_value
-                                } else if operator == '-' {
-                                    first_value - second_value
-                                } else if operator == '*' {
-                                    first_value * second_value
-                                } else if operator == '/' {
-                                    first_value / second_value
-                                } else {
-                                    0f32
-                                };
+                                let result: f32 = calculate(first_value, second_value, operator);
 
                                 println!(
                                     "{first} {operator} {second} = {result}",
